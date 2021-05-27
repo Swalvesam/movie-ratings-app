@@ -31,13 +31,45 @@ model.db.create_all()
 #load data from data/movies.json and save it to a variable:
 with open('data/movies.json') as f:
     movie_data = json.loads(f.read())
+# Create movies, store them in list so we can use them
+# to create fake ratings later
 
+
+movies_in_db = []
+for movie in movie_data:
+    # TODO: get the title, overview, and poster_path from the movie
+    # dictionary. Then, get the release_date and convert it to a
+    # datetime object with datetime.strptime
+    title, overview, poster_path = (movie['title'],
+                                    movie['overview'],
+                                    movie['poster_path'])
+    release_date = datetime.strptime(movie['release_date'], '%Y-%m-%d' )
+
+    # TODO: create a movie here and append it to movies_in_db
 #movie_data will be a list of dictionaries that look like this:
+    db_movie = crud.create_movie(title,
+                                overview,
+                                release_date,
+                                poster_path)
+
+    movies_in_db.append(db_movie)
 
 #Loop over each dictionary in movie_data and use it to supply 
-#arguments to crud.create_movie. You’ll also going to want to 
-#add each new movie to a list because we’re going to need them 
-#later to create random ratings.  
-#we need to work with the db.DateTime column-type 
+#arguments to crud.create_movie.  
+#add each new movie to a list  
+#to create random ratings.  
+#work with the db.DateTime column-type 
 
+for n in range(10):
+    email = f'user{n}@test.com'  # Voila! A unique email!
+    password = 'test'
+
+    # TODO: create a user here
+    user = crud.create_user(email, password) 
+    # TODO: create 10 ratings for the user
+    for _ in range(10):
+        random_movie = choice(movies_in_db)
+        score = randint(1, 5)
+
+        crud.create_rating(user, random_movie, score)
 
